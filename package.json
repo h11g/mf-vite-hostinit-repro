@@ -1,0 +1,22 @@
+{
+  "name": "mf-hostinit-repro",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
+  "devDependencies": {
+    "@module-federation/runtime": "2.9.0",
+    "@module-federation/vite": "1.20.9",
+    "vite": "^7.3.0"
+  },
+  "scripts": {
+    "build": "npm run build:leaf && npm run build:mid && npm run build:host",
+    "build:leaf": "cd apps/leaf && vite build",
+    "build:mid": "cd apps/mid && vite build",
+    "build:mid:no-remotes": "cd apps/mid && NO_REMOTES=1 vite build",
+    "build:mid:guard": "cd apps/mid && MF_GUARD=1 vite build",
+    "build:host": "cd apps/host && vite build",
+    "serve": "python3 -m http.server 5599 -d dist"
+  }
+}

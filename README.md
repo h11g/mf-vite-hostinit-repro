@@ -85,15 +85,26 @@ Expected: `mid` resolves `shared-lib` from the host, exactly like `leaf` does.
 ## Two more builds that confirm the cause
 
 ```bash
-npm run build:mid:no-remotes && npm run build:host   # drop mid's sub-remote
-npm run build:mid:guard      && npm run build:host   # keep it, guard the init
+npm run build:mid:no-remotes  && npm run build:host   # drop mid's sub-remote
+npm run build:mid:guard       && npm run build:host   # keep it, guard the init
+npm run build:mid:loaded-first && npm run build:host  # keep it, shareStrategy: 'loaded-first'
 ```
 
 | build of `mid` | `hostInit` in the `remoteEntry` graph | `mid` scope === host scope | `shared-lib` copies |
 | --- | --- | --- | --- |
-| default | yes | **false** | **2** |
+| default (`version-first`) | yes | **false** | **2** |
 | `NO_REMOTES=1` | no (only in `mid`'s own `index.html`) | true | 1 |
 | `MF_GUARD=1` | yes | true | 1 |
+| `MF_LOADED_FIRST=1` | yes | **false** | 1 |
+
+The last row matters for triage: with `shareStrategy: 'loaded-first'` the share
+scope is **still** replaced, but the duplicate disappears, because `hostInit`
+gates its whole share-preload loop on `shouldPreloadShares =
+shareStrategy !== "loaded-first"` (`lib/index.js:4961`). Nothing then forces the
+container to load its own copies, so the modules resolved during the *first*
+`init()` survive in `globalThis.__mf_module_cache__`. So `loaded-first`
+containers carry the same broken scope silently and only break later, when
+something does materialize a share from it.
 
 `MF_GUARD=1` enables a ~10-line `transform` in `apps/mid/vite.config.js` that
 wraps the generated entry's `init` so a scope-less call cannot clobber an

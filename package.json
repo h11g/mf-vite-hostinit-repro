@@ -17,6 +17,7 @@
     "build:mid:no-remotes": "cd apps/mid && NO_REMOTES=1 vite build",
     "build:mid:guard": "cd apps/mid && MF_GUARD=1 vite build",
     "build:host": "cd apps/host && vite build",
-    "serve": "python3 -m http.server 5599 -d dist"
+    "serve": "python3 -m http.server 5599 -d dist",
+    "build:mid:loaded-first": "cd apps/mid && MF_LOADED_FIRST=1 vite build"
   }
 }

@@ -58,6 +58,10 @@ export default defineConfig({
 					}
 				: {},
 			shared: { 'shared-lib': { singleton: true } },
+			// MF_LOADED_FIRST=1 -> hostInit skips its share-preload loop
+			// (`shouldPreloadShares` in the plugin gates on this).
+			shareStrategy:
+				process.env.MF_LOADED_FIRST === '1' ? 'loaded-first' : 'version-first',
 		}),
 		...(process.env.MF_GUARD === '1' ? [initGuard] : []),
 	],

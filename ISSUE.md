@@ -18,8 +18,8 @@ app: a second React, which crashes the embedded remote with
 
 ## Reproduction
 
-https://github.com/<repo> — `npm install && npm run build && npm run serve`,
-then open `http://localhost:5599/host/index.html`.
+https://github.com/h11g/mf-vite-hostinit-repro — `npm install && npm run build
+&& npm run serve`, then open `http://localhost:5599/host/index.html`.
 
 | app | role | `exposes` | `remotes` |
 | --- | --- | --- | --- |
